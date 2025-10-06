@@ -1,4 +1,4 @@
-import lfsr
+from Geffe import lfsr
 
 KEYS = [3, 7, 10]
 KEY_LENGTHS = [4, 4, 4]
