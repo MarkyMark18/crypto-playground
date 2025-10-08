@@ -11,6 +11,7 @@ Python implementations of cryptographic algorithms from my 'Cybersecurity in Act
 Currently implemented:
 * Linear Feedback Shift Register (LFSR)
 *  Geffe Generator
+*  Quantum Key Distribution (QKD) Simulation
 
 ---
 
