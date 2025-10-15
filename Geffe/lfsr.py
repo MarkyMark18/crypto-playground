@@ -1,27 +1,14 @@
 from bitstring import BitArray
 
 KEY = 107
-KEY_BINARY_LENGTH = 8
-TAP_BIT_POSITIONS = [0, 4, 7]
-LOOPS = 15
-
-# Preserves the length of the original bitstring, so the key can display properly
-def int_to_bitstring_preserve_length(my_int):
-    # Convert the integer to a BitArray
-    my_bits = BitArray(uint=my_int, length=KEY_BINARY_LENGTH)
-    # Return the BitArray as a binary string
-    return my_bits.bin
+REGISTER_LENGTH = 4
+TAP_BIT_POSITIONS = [0, 3]
+TICKS = 15
 
 # Allows the stream to 'grow' as long as you like
 def int_to_bitstring(my_int):
     my_bits = bin(my_int)[2:]
     return my_bits
-
-def bitstring_to_int(my_bits):
-    # Convert the binary string into a BitArray
-    my_bits = BitArray(bin=my_bits, length=KEY_BINARY_LENGTH)
-    # Return the BitArray as a two's complement unsigned integer
-    return my_bits.uint
 
 class LFSR:
     def __init__(self, key: int, key_length: int, tap_bit_positions: list):
@@ -41,6 +28,19 @@ class LFSR:
         self.tap_bit_positions = tap_bit_positions
         self.stream = 0
         self.cycles = 0
+
+    # Preserves the length of the original bitstring, so the key can display properly
+    def int_to_bitstring_preserve_length(self, my_int):
+        # Convert the integer to a BitArray
+        my_bits = BitArray(uint=my_int, length=self.key_length)
+        # Return the BitArray as a binary string
+        return my_bits.bin
+
+    def bitstring_to_int(self, my_bits):
+        # Convert the binary string into a BitArray
+        my_bits = BitArray(bin=my_bits, length=self.key_length)
+        # Return the BitArray as a two's complement unsigned integer
+        return my_bits.uint
 
     def read_stream_bit(self):
         # Bitwise AND to ignore everything except the first bit
@@ -69,7 +69,7 @@ class LFSR:
         self.state >>= 1
 
     def insert_feedback_bit(self, fb_bit):
-        fb_bit_pos = fb_bit << (KEY_BINARY_LENGTH - 1) # -1 to account for positions starting a zero
+        fb_bit_pos = fb_bit << (self.key_length - 1) # -1 to account for positions starting a zero
         self.state |= fb_bit_pos
 
     # Shifts the stream left and uses bitwise OR to append the new stream bit
@@ -79,17 +79,17 @@ class LFSR:
 
     # Single pass of the LFSR algorithm, outputting to the terminal
     def clock_verbose(self):
-        state_bin_str = int_to_bitstring_preserve_length(self.state)
+        state_bin_str = self.int_to_bitstring_preserve_length(self.state)
         print(f"Binary representation of the key register: {state_bin_str}")
         stream_bit = self.read_stream_bit()
         print(f"Stream bit: {stream_bit}")
         feedback_bit = self.calculate_feedback_bit()
         print(f"Feedback bit: {feedback_bit}")
         self.shift_register()
-        shifted_state_bin_str = int_to_bitstring_preserve_length(self.state)
+        shifted_state_bin_str = self.int_to_bitstring_preserve_length(self.state)
         print(f"Binary representation of the shifted key register: {shifted_state_bin_str}")
         self.insert_feedback_bit(feedback_bit)
-        updated_reg_bin_str = int_to_bitstring_preserve_length(self.state)
+        updated_reg_bin_str = self.int_to_bitstring_preserve_length(self.state)
         print(f"Binary representation of the updated key register: {updated_reg_bin_str}")
         self.append_to_stream(stream_bit)
         stream_bin_str = int_to_bitstring(self.stream)
@@ -110,8 +110,8 @@ class LFSR:
 
 
 if __name__ == '__main__':
-    lfsr = LFSR(KEY, KEY_BINARY_LENGTH, TAP_BIT_POSITIONS)
-    for i in range(LOOPS):
+    lfsr = LFSR(KEY, REGISTER_LENGTH, TAP_BIT_POSITIONS)
+    for i in range(TICKS):
         print(f"Pass number {i + 1}")
         key_reg, stream, cycles = lfsr.clock_verbose()
     print(f"Cycles: {lfsr.cycles}")
