@@ -16,14 +16,18 @@ class DIV_AND_CONQ_LFSR:
         self.l3_reg_len = l3_reg_len
         self.l3_taps = l3_taps
 
-        # Open the stream file and add the bits to a list
-        f = open(stream_file)
-        stream_file = f.read().strip()
-        self.check_bits = stream_file.split(" ")
-        for i in range(len(self.check_bits)):
-            self.check_bits[i] = int(self.check_bits[i])
-        f.close()
+        self.stream_file = stream_file
+        self.check_bits = []
 
+    def load_stream_file(self):
+        # Open the stream file and add the bits to a list
+        print(f"Opening stream file: {self.stream_file}")
+        with open(self.stream_file, "r") as f:
+            stream_file = f.read().strip()
+            self.check_bits = stream_file.split(" ")
+            print(f"Stream contains {len(self.check_bits)} bits")
+            for i in range(len(self.check_bits)):
+                self.check_bits[i] = int(self.check_bits[i])
 
     # Get the key for a single output LFSR (LFSR 2/3)
     def get_output_lfsr_key(self, reg_len, taps):
@@ -50,12 +54,12 @@ class DIV_AND_CONQ_LFSR:
     # Get the key for the multiplexer LFSR (LFSR1)
     def get_multiplexer_lfsr_key(self):
         # Get the keys for the two output LFSRs
-        print("Attacking LFSR2")
+        print("\nAttacking LFSR2")
         self.l2_key = self.get_output_lfsr_key(self.l2_reg_len, self.l2_taps)
-        print("Attacking LFSR3")
+        print("\nAttacking LFSR3")
         self.l3_key = self.get_output_lfsr_key(self.l3_reg_len, self.l3_taps)
 
-        print("Attacking LFSR1")
+        print("\nAttacking LFSR1")
         max_match = 0
         max_match_key = 0
         for key_attempt in range(2**self.l1_reg_len):
@@ -102,9 +106,10 @@ if __name__ == "__main__":
     )
 
     print("A demonstration of a divide and conquer attack on a Geffe Generator")
+    # Open the stream file
+    div.load_stream_file()
     l1_key, l2_key, l3_key = div.get_multiplexer_lfsr_key()
-    print("")
-    print("-------- RESULTS --------")
+    print("\n-------- RESULTS --------")
     print(f"LFSR1 Key: {l1_key}")
     print(f"LFSR2 Key: {l2_key}")
     print(f"LFSR3 Key: {l3_key}")
