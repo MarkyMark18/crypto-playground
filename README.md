@@ -9,40 +9,54 @@ Python implementations of cryptographic algorithms from my 'Cybersecurity in Act
 ## Features
 
 Currently implemented:
-* Linear Feedback Shift Register (LFSR)
+*  Linear Feedback Shift Register (LFSR)
 *  Geffe Generator
+*  Divide and Conquer attack on a Geffe Generator
 *  Quantum Key Distribution (QKD) Simulation
 
 ---
 
 ## How to Run
 
-Each algorithm is in its own module. To run the Geffe Generator, for example, you would enter:
+There are two ways to run the simulations:
+
+1) Each algorithm is in its own module. To run the Geffe Generator, for example, you would enter:
 
 ```sh
 python geffe.py
 ```
 
-They currently have hardcoded parameters such as initial keys, taps and register lengths at the top of the .py files, however in the future I plan to make a script that will allow you to change these without editing the file.
+2) You can run the main interface which will allow you to run multiple demonstrations in a single 'session':
 
-**Example Output (geffe.py):**
-
+```sh
+python main.py
 ```
-Outputting from LFSR2
-Latest stream bit: 0
-The current stream is: 0
-------------------------------------------------
-Outputting from LFSR2
-Latest stream bit: 1
-The current stream is: 1
-------------------------------------------------
-Outputting from LFSR1
-Latest stream bit: 1
-The current stream is: 11
-------------------------------------------------
-Outputting from LFSR1
-Latest stream bit: 0
-The current stream is: 110
-------------------------------------------------
-...
+
+## Editing Configurations
+
+To configure the setup of the Geffe Generator/Divide and Conquer attack, you can edit geffeconfig.json, an example is shown below:
+
+Note: For the divide and conquer attack to be successful, the configuration of the register lengths and taps must match the ones used to create the stream file
+
+```sh
+{
+  "KEYS": [88, 201, 7821],
+  "REGISTER_LENGTHS": [7, 11, 13],
+  "TAPS": [
+    [0, 6],
+    [0, 9],
+    [0, 9, 10, 12]
+  ],
+  "BITS_TO_GENERATE": 2000,
+  "FILENAME": "StreamFile.txt"
+}
+```
+
+To configure the QKD simulation, you can edit qkdconfig.json, an example is shown below:
+
+```sh
+{
+  "NO_OF_PHOTONS": 10000,
+  "IS_EAVESDROPPED": true
+}
 ```
