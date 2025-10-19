@@ -29,9 +29,9 @@ class GeffeGenerator:
 
     def output_stream_file(self, filename):
         print(f"Outputting stream to file: {filename}")
-        with open(filename, "w") as f:
+        with open(filename, "w") as sf:
             for bit in bin(self.stream)[2:]:
-                f.write(str(bit) + " ")
+                sf.write(str(bit) + " ")
 
     # Runs a single 'tick' of the Geffe Generator and outputs a stream bit
     def clock(self):
@@ -51,8 +51,8 @@ if __name__ == "__main__":
 
     # Load the configuration
     try:
-        with open("geffeconfig.json", "r") as f:
-            config = json.load(f)
+        with open("geffeconfig.json", "r") as jf:
+            config = json.load(jf)
     except FileNotFoundError:
         print("Error: geffeconfig.json not found")
         exit(1)

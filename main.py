@@ -83,7 +83,7 @@ def run_divide_and_conquer():
     input_file = config["FILENAME"]
 
     # Create the divide and conquer setup
-    div = d.DIV_AND_CONQ_LFSR(
+    div = d.DivAndConqLfsr(
         l1_reg_len=register_lens[0],
         l1_taps=taps[0],
         l2_reg_len=register_lens[1],
@@ -128,7 +128,7 @@ def run_qkd():
     print("To change the configuration of the QKD simulation, edit qkdconfig.json")
     print("")
 
-    qkd = q.QKD()
+    qkd = q.Qkd()
     qkd.simulate_qkd(no_of_photons, is_eavesdropped)
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 from QKD import sender, receiver, eavesdropper
 import json
 
-class QKD:
+class Qkd:
     def __init__(self):
         self.alice = sender.Sender()
         self.bob = receiver.Receiver()
@@ -57,9 +57,9 @@ if __name__ == '__main__':
     except json.JSONDecodeError:
         print("Error: qkdconfig.json is not a valid JSON")
         exit(1)
-    no_of_photons = config["NO_OF_PHOTONS"]
-    is_eavesdropped = config["IS_EAVESDROPPED"]
+    input_no_of_photons = config["NO_OF_PHOTONS"]
+    input_is_eavesdropped = config["IS_EAVESDROPPED"]
 
-    qkd = QKD()
-    qkd.simulate_qkd(no_of_photons, is_eavesdropped)
+    qkd = Qkd()
+    qkd.simulate_qkd(input_no_of_photons, input_is_eavesdropped)
 

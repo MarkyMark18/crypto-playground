@@ -2,7 +2,7 @@ import json
 from Geffe import lfsr
 
 
-class DIV_AND_CONQ_LFSR:
+class DivAndConqLfsr:
     def __init__(self, l1_reg_len, l1_taps, l2_reg_len, l2_taps, l3_reg_len, l3_taps):
         # Params for LFSR1
         self.l1_key = 0
@@ -22,8 +22,8 @@ class DIV_AND_CONQ_LFSR:
     def load_stream_file(self, stream_file):
         # Open the stream file and add the bits to a list
         print(f"Opening stream file: {stream_file}")
-        with open(stream_file, "r") as f:
-            stream_file = f.read().strip()
+        with open(stream_file, "r") as sf:
+            stream_file = sf.read().strip()
             self.check_bits = stream_file.split(" ")
             print(f"Stream contains {len(self.check_bits)} bits")
             for i in range(len(self.check_bits)):
@@ -107,18 +107,18 @@ if __name__ == "__main__":
         print("Error: geffeconfig.json is not a valid JSON")
         exit(1)
 
-    register_lens = config["REGISTER_LENGTHS"]
-    taps = config["TAPS"]
+    input_register_lens = config["REGISTER_LENGTHS"]
+    input_taps = config["TAPS"]
     input_file = config["FILENAME"]
 
     # Create the divide and conquer setup
-    div = DIV_AND_CONQ_LFSR(
-        l1_reg_len=register_lens[0],
-        l1_taps=taps[0],
-        l2_reg_len=register_lens[1],
-        l2_taps=taps[1],
-        l3_reg_len=register_lens[2],
-        l3_taps=taps[2]
+    div = DivAndConqLfsr(
+        l1_reg_len=input_register_lens[0],
+        l1_taps=input_taps[0],
+        l2_reg_len=input_register_lens[1],
+        l2_taps=input_taps[1],
+        l3_reg_len=input_register_lens[2],
+        l3_taps=input_taps[2]
     )
 
     # Open the stream file and carry out the attack
