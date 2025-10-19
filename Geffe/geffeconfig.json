@@ -1,0 +1,11 @@
+{
+  "KEYS": [88, 201, 7821],
+  "REGISTER_LENGTHS": [7, 11, 13],
+  "TAPS": [
+    [0, 6],
+    [0, 9],
+    [0, 9, 10, 12]
+  ],
+  "BITS_TO_GENERATE": 2000,
+  "FILENAME": "StreamFile.txt"
+}

@@ -1,8 +1,9 @@
+import json
 from Geffe import lfsr
 
 
 class DIV_AND_CONQ_LFSR:
-    def __init__(self, l1_reg_len, l1_taps, l2_reg_len, l2_taps, l3_reg_len, l3_taps, stream_file):
+    def __init__(self, l1_reg_len, l1_taps, l2_reg_len, l2_taps, l3_reg_len, l3_taps):
         # Params for LFSR1
         self.l1_key = 0
         self.l1_reg_len = l1_reg_len
@@ -16,13 +17,12 @@ class DIV_AND_CONQ_LFSR:
         self.l3_reg_len = l3_reg_len
         self.l3_taps = l3_taps
 
-        self.stream_file = stream_file
         self.check_bits = []
 
-    def load_stream_file(self):
+    def load_stream_file(self, stream_file):
         # Open the stream file and add the bits to a list
-        print(f"Opening stream file: {self.stream_file}")
-        with open(self.stream_file, "r") as f:
+        print(f"Opening stream file: {stream_file}")
+        with open(stream_file, "r") as f:
             stream_file = f.read().strip()
             self.check_bits = stream_file.split(" ")
             print(f"Stream contains {len(self.check_bits)} bits")
@@ -95,19 +95,35 @@ class DIV_AND_CONQ_LFSR:
 
 
 if __name__ == "__main__":
+
+    # Load the configuration
+    try:
+        with open("geffeconfig.json", "r") as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        print("Error: geffeconfig.json not found")
+        exit(1)
+    except json.JSONDecodeError:
+        print("Error: geffeconfig.json is not a valid JSON")
+        exit(1)
+
+    register_lens = config["REGISTER_LENGTHS"]
+    taps = config["TAPS"]
+    input_file = config["FILENAME"]
+
+    # Create the divide and conquer setup
     div = DIV_AND_CONQ_LFSR(
-        l1_reg_len=7,
-        l1_taps=[0, 6],
-        l2_reg_len=11,
-        l2_taps=[0, 9],
-        l3_reg_len=13,
-        l3_taps=[0, 9, 10, 12],
-        stream_file="StreamFile.txt"
+        l1_reg_len=register_lens[0],
+        l1_taps=taps[0],
+        l2_reg_len=register_lens[1],
+        l2_taps=taps[1],
+        l3_reg_len=register_lens[2],
+        l3_taps=taps[2]
     )
 
+    # Open the stream file and carry out the attack
     print("A demonstration of a divide and conquer attack on a Geffe Generator")
-    # Open the stream file
-    div.load_stream_file()
+    div.load_stream_file(input_file)
     l1_key, l2_key, l3_key = div.get_multiplexer_lfsr_key()
     print("\n-------- RESULTS --------")
     print(f"LFSR1 Key: {l1_key}")

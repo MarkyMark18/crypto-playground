@@ -1,4 +1,5 @@
 from QKD import sender, receiver, eavesdropper
+import json
 
 class QKD:
     def __init__(self):
@@ -42,10 +43,23 @@ class QKD:
         # Alice checks the bits against her own list, calculates the error rate and announces if there is an
         # eavesdropper!
         self.eavesdropper_detected = self.alice.is_there_eavesdropper(self.bob.announce_random_bits())
-        print(f'Is there eavesdropper: {self.eavesdropper_detected}')
+        print(f'Is there an eavesdropper: {self.eavesdropper_detected}')
 
 
 if __name__ == '__main__':
+    # Load the configuration
+    try:
+        with open("QKD/qkdconfig.json", "r") as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        print("Error: qkdconfig.json not found")
+        exit(1)
+    except json.JSONDecodeError:
+        print("Error: qkdconfig.json is not a valid JSON")
+        exit(1)
+    no_of_photons = config["NO_OF_PHOTONS"]
+    is_eavesdropped = config["IS_EAVESDROPPED"]
+
     qkd = QKD()
-    qkd.simulate_qkd(100000, True)
+    qkd.simulate_qkd(no_of_photons, is_eavesdropped)
 
