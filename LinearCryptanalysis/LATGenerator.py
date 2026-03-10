@@ -19,6 +19,8 @@ class LATGenerator:
 
                 self._lat[input_mask][output_mask] = (matches - 8)
 
+        return self._lat
+
     def print_lat(self):
         header = "   |"
         for i in range(16):
@@ -36,6 +38,8 @@ class LATGenerator:
                 else:
                     row_str += f"  {bias}"
             print(row_str)
+
+        print()
 
 if __name__ == "__main__":
     lat = LATGenerator()
